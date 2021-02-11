@@ -15,8 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.auth.decorators import login_required
+from parking_zones import views as parkingzoneviews
+from users import views as users_views
 
 urlpatterns = [
     path('', include('source.urls')),
     path('admin/', admin.site.urls),
-]
+    path('user/signup/', users_views.signup_view, name='signup'),
+    path('user/login', users_views.user_login, name='login'),
+    path('user/logout/', users_views.user_logout, name='logout'),
+    path('book/', login_required(parkingzoneviews.ReservationView.as_view()), name='book'),
+    ]

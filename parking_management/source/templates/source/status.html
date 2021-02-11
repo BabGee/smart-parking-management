@@ -1,0 +1,59 @@
+{% extends 'source/base.html' %}
+
+{% block content %}
+
+<section>
+    <div class="container-fluid">
+       <div class="row">
+          <div class="col-md-5">
+             <div class="full slider_cont_section">
+                <h4>{{parking_zone.name}}</h4>
+                <p>{{parking_zone.address}}</p>
+                <!-- <div class="button_section">
+                   <a href="{% url 'book' %}">Book Spot</a>
+                </div> -->
+             </div>
+          </div>
+          <div class="col-md-7">
+             <div class="col-lg-8">
+                <div class="card mb-4">
+                   <div class="card-header">
+                       <i class="fas fa-table mr-1"></i>
+                   </div>
+                   <div class="card-body">
+                       <div class="table-responsive">
+                           <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                               <thead>
+                                   <tr>
+                                    <th>Total Slots</th>
+                                    <th>Vacant Slots</th>
+                                    <th>Price</th>
+                                   </tr>
+                               </thead>
+                               <tbody>
+                                <tr>
+                                    <td>{{parking_zone.num_of_slots}}</td>
+                                    <td>{{ vacant_slots }}</td>
+                                    <td>{{parking_zone.price}}</td>
+                                    <td>
+                                       <a href="">
+                                           <button class="btn btn-primary">Book Parking</button>            
+                                       </a>
+                                   </td>
+                                    
+                                </tr>
+                                 
+      
+                               </tbody>
+                           </table>
+                       </div>
+                   </div>
+               </div>
+             </div>
+          </div>
+       </div>
+    </div>
+ </section>
+
+
+{% endblock %}
