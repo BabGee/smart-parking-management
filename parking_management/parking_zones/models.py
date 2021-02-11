@@ -28,6 +28,7 @@ class Reservation(models.Model):
     parking_zone = models.ForeignKey(Parking_Zone, on_delete=models.CASCADE)
     plate_number = models.CharField(max_length=10)
     phone_number = models.CharField(max_length=16)
+    checked_out = models.BooleanField(default=False)
 
     def __str__(self):
         return f'Reservation for vehicle: {self.plate_number}'
