@@ -9,8 +9,8 @@ class Parking_ZoneAdmin(admin.ModelAdmin):
 
 
 class Reservation_Admin(admin.ModelAdmin):
-    list_display = ('customer', 'start_date', 'finish_date', 'parking_zone', 'plate_number', 'phone_number',)
-    list_filter = ('start_date', 'finish_date', 'parking_zone')
+    list_display = ('customer', 'start_date', 'finish_date', 'parking_zone', 'plate_number', 'phone_number', 'checked_out')
+    list_filter = ('start_date', 'finish_date', 'parking_zone', 'checked_out')
     search_fields = ('customer', 'plate_number',)
 
 

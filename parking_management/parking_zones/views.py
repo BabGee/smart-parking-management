@@ -4,15 +4,34 @@ from .models import Reservation, Parking_Zone
 from django.db.models import Q
 from django.contrib import messages
 from .forms import ReservationForm
-
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
+from .models import Reservation
 
 class ReservationView(View):
     def get(self, request):
+        try:
+            user_reservation = Reservation.objects.get(customer=request.user, checked_out=False)
+            if user_reservation:
+                messages.warning(self.request, 'Please Check Out Your Previous Reservation')
+                return redirect('index')
+        except ObjectDoesNotExist:
+            pass   
+                
         reservation = ReservationForm()
 
         return render(request, 'parking_zones/booking.html', {'form': reservation})
 
     def post(self, request):
+        try:
+            user_reservation = Reservation.objects.get(customer=request.user, checked_out=False)
+            if user_reservation:
+                messages.warning(self.request, 'Please Check Out Your Previous Reservation')
+                return redirect('index')
+
+        except ObjectDoesNotExist:
+            pass    
+
         reservation_form = ReservationForm(data=request.POST)
 
         if reservation_form.is_valid():
@@ -21,10 +40,8 @@ class ReservationView(View):
             parking_zone = reservation_form.cleaned_data['parking_zone']
             plate_number = reservation_form.cleaned_data['plate_number']
 
-            if Reservation.objects.filter(Q(plate_number=plate_number,
-                                            start_date__range=[start_date, finish_date]) |
-                                          Q(plate_number=plate_number,
-                                            finish_date__range=[start_date, finish_date])).exists():
+            if Reservation.objects.filter(Q(start_date__range=[start_date, finish_date]) |
+                                          Q(finish_date__range=[start_date, finish_date])).exists():
                                             messages.warning(request, 'Dates overlaps. Try other dates and / or parking space.')
                 
             else:
@@ -45,3 +62,23 @@ class ReservationView(View):
             return render(request, 'parking_zones/booking.html', {'form': reservation_form})
 
         return render(request, 'parking_zones/booking.html', {'form': reservation_form})
+
+@login_required
+def check_out(request):
+    try:
+        reservation = Reservation.objects.get(customer=request.user, checked_out=False)
+        if reservation:
+            reservation.checked_out = True
+            reservation.save()
+            parking_zone_name= reservation.parking_zone.name
+            parking_zone = Parking_Zone.objects.get(name=parking_zone_name)
+            parking_zone.occupied_slots -= 1
+            parking_zone.vacant_slots += 1
+            parking_zone.save()
+            messages.info(request, 'Successfully Checked Out')
+        else:
+            messages.warning(request, f'No Parking reservation exists for {request.user}')
+    except ObjectDoesNotExist:
+            messages.warning(request, 'You do not have an active Parking Reservation')        
+
+    return redirect('index')      

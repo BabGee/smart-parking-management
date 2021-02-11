@@ -1,10 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
-from parking_zones.models import Parking_Zone
+from parking_zones.models import Parking_Zone, Reservation
 
+from django.contrib import messages
 
-
-def index(request):
+def index(request):  
     context = {
         'all_parking_zones':Parking_Zone.objects.all()
     }

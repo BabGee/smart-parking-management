@@ -6,7 +6,7 @@ from .models import Reservation
 class ReservationForm(ModelForm):
     class Meta:
         model = Reservation
-        exclude = ['customer',]
+        exclude = ['customer', 'checked_out']
         # Validating form fields using widgets
         widgets = {
             'start_date': DateInput(attrs={'type': 'date'}),
