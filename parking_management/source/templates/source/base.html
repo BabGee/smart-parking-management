@@ -59,6 +59,9 @@
                      <a href="#">{{user.username}}</a>
                   </li>
                   <li>
+                     <a href="{% url 'ticket' %}">Print Ticket</a>
+                  </li>
+                  <li>
                      <a href="{% url 'logout' %}">Logout</a>
                   </li>
                {% else %}

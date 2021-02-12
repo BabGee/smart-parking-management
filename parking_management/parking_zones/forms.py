@@ -1,7 +1,7 @@
 import datetime
 from django.forms import ModelForm, DateInput, TextInput, ValidationError
 from .models import Reservation
-
+from django.contrib import messages
 
 class ReservationForm(ModelForm):
     class Meta:

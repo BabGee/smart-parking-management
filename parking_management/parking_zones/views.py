@@ -8,6 +8,9 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Reservation
 
+from django.utils import timezone
+from .render import Render
+
 class ReservationView(View):
     def get(self, request):
         try:
@@ -54,9 +57,23 @@ class ReservationView(View):
             messages.info(request, 'Successfully Booked')
             return redirect('index')
 
-            return render(request, 'parking_zones/booking.html', {'form': reservation_form})
+            #return render(request, 'parking_zones/ticket.html', {'reservation':reservation})
 
         return render(request, 'parking_zones/booking.html', {'form': reservation_form})
+
+
+class Pdf(View):
+
+    def get(self, request):
+        
+        today = timezone.now()
+        reservation = Reservation.objects.filter(Q(customer=request.user, checked_out=False) | Q(customer=request.user, checked_out=True)).last()
+        params = {
+            'today': today,
+            'reservation': reservation,
+            'request': request
+        }
+        return Render.render('parking_zones/ticket.html', params)
 
 @login_required
 def check_out(request):
