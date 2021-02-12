@@ -40,24 +40,19 @@ class ReservationView(View):
             parking_zone = reservation_form.cleaned_data['parking_zone']
             plate_number = reservation_form.cleaned_data['plate_number']
 
-            if Reservation.objects.filter(Q(start_date__range=[start_date, finish_date]) |
-                                          Q(finish_date__range=[start_date, finish_date])).exists():
-                                            messages.warning(request, 'Dates overlaps. Try other dates and / or parking space.')
-                
-            else:
-                reservation = reservation_form.save(commit=False)
-                reservation.customer = request.user
-                reservation.parking_zone = parking_zone
-                reservation.save()
-                #print(parking_zone) #River Mall
-                parkingzone = Parking_Zone.objects.get(name=parking_zone)
-                parkingzone.occupied_slots += 1
-                parkingzone.save()
-                vacantslots = int(parkingzone.num_of_slots) - int(parkingzone.occupied_slots)
-                parkingzone.vacant_slots = vacantslots
-                parkingzone.save()
-                messages.info(request, 'Successfully Booked')
-                return redirect('index')
+            reservation = reservation_form.save(commit=False)
+            reservation.customer = request.user
+            reservation.parking_zone = parking_zone
+            reservation.save()
+            #print(parking_zone) #River Mall
+            parkingzone = Parking_Zone.objects.get(name=parking_zone)
+            parkingzone.occupied_slots += 1
+            parkingzone.save()
+            vacantslots = int(parkingzone.num_of_slots) - int(parkingzone.occupied_slots)
+            parkingzone.vacant_slots = vacantslots
+            parkingzone.save()
+            messages.info(request, 'Successfully Booked')
+            return redirect('index')
 
             return render(request, 'parking_zones/booking.html', {'form': reservation_form})
 
