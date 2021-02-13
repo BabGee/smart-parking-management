@@ -11,6 +11,15 @@ from .models import Reservation
 from django.utils import timezone
 from .render import Render
 
+
+import random
+import string
+
+def create_ticket_code():
+    return ''.join(random.choices(string.ascii_lowercase + string.digits, k=6))
+
+
+
 class ReservationView(View):
     def get(self, request):
         try:
@@ -46,8 +55,8 @@ class ReservationView(View):
             reservation = reservation_form.save(commit=False)
             reservation.customer = request.user
             reservation.parking_zone = parking_zone
+            reservation.ticket_code = create_ticket_code()
             reservation.save()
-            #print(parking_zone) #River Mall
             parkingzone = Parking_Zone.objects.get(name=parking_zone)
             parkingzone.occupied_slots += 1
             parkingzone.save()
@@ -56,8 +65,6 @@ class ReservationView(View):
             parkingzone.save()
             messages.info(request, 'Successfully Booked')
             return redirect('index')
-
-            #return render(request, 'parking_zones/ticket.html', {'reservation':reservation})
 
         return render(request, 'parking_zones/booking.html', {'form': reservation_form})
 
@@ -68,12 +75,16 @@ class Pdf(View):
         
         today = timezone.now()
         reservation = Reservation.objects.filter(Q(customer=request.user, checked_out=False) | Q(customer=request.user, checked_out=True)).last()
-        params = {
-            'today': today,
-            'reservation': reservation,
-            'request': request
-        }
-        return Render.render('parking_zones/ticket.html', params)
+        if reservation:
+            params = {
+                'today': today,
+                'reservation': reservation,
+                'request': request
+            }
+            return Render.render('parking_zones/ticket.html', params)
+        else:
+            messages.warning(self.request, f'No Parking reservation exists for {self.request.user}')
+            return redirect('index')    
 
 @login_required
 def check_out(request):
@@ -82,15 +93,14 @@ def check_out(request):
         if reservation:
             reservation.checked_out = True
             reservation.save()
-            parking_zone_name= reservation.parking_zone.name
+            parking_zone_name = reservation.parking_zone.name
             parking_zone = Parking_Zone.objects.get(name=parking_zone_name)
             parking_zone.occupied_slots -= 1
             parking_zone.vacant_slots += 1
             parking_zone.save()
             messages.info(request, 'Successfully Checked Out')
-        else:
-            messages.warning(request, f'No Parking reservation exists for {request.user}')
+        
     except ObjectDoesNotExist:
-            messages.warning(request, 'You do not have an active Parking Reservation')        
+            messages.warning(request, f'No Parking reservation exists for {request.user}')        
 
     return redirect('index')      

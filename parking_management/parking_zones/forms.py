@@ -6,7 +6,7 @@ from django.contrib import messages
 class ReservationForm(ModelForm):
     class Meta:
         model = Reservation
-        exclude = ['customer', 'checked_out']
+        exclude = ['ticket_code', 'customer', 'checked_out']
         # Validating form fields using widgets
         widgets = {
             'start_date': DateInput(attrs={'type': 'date'}),

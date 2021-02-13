@@ -22,6 +22,7 @@ class Parking_Zone(models.Model):
 
 
 class Reservation(models.Model):
+    ticket_code = models.CharField(max_length=6, blank=True, null=True)
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
     start_date = models.DateField()
     finish_date = models.DateField()
