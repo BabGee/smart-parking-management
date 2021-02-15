@@ -26,6 +26,7 @@ urlpatterns = [
     path('user/login', users_views.user_login, name='login'),
     path('user/logout/', users_views.user_logout, name='logout'),
     path('book/', login_required(parkingzoneviews.ReservationView.as_view()), name='book'),
-    path('ticket', login_required(parkingzoneviews.Pdf.as_view()), name='ticket'),
+    path('ticket/', login_required(parkingzoneviews.Ticket_Pdf.as_view()), name='ticket'),
+    path('all_tickets/', login_required(parkingzoneviews.Display_Tickets.as_view()), name='all-tickets'),
     path('checkout/', parkingzoneviews.check_out, name='checkout')
     ]

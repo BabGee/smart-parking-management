@@ -56,10 +56,19 @@
                 </li>
                 {% if user.is_authenticated %}
                   <li>
-                     <a href="#">{{user.username}}</a>
+                     <a href="#">Account: {{user.username}}</a>
                   </li>
                   <li>
                      <a href="{% url 'ticket' %}">Print Ticket</a>
+                  </li>
+                  <li>
+                     <a href="{% url 'all-tickets' %}">All Tickets</a>
+                  </li>
+                  <li>
+                     <a href="{% url 'book' %}">Reserve Parking</a>
+                  </li>
+                  <li>
+                     <a href="{% url 'checkout' %}">Checkout Parking</a>
                   </li>
                   <li>
                      <a href="{% url 'logout' %}">Logout</a>

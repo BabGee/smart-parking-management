@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'source.apps.SourceConfig',
     'parking_zones.apps.ParkingZonesConfig',
     'users.apps.UsersConfig',
+    
     #3rd party packages
     'crispy_forms',
     

@@ -1,6 +1,7 @@
 from django.db import models   
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 class Parking_Zone(models.Model):
     name = models.CharField(max_length=200)
@@ -30,6 +31,10 @@ class Reservation(models.Model):
     plate_number = models.CharField(max_length=10)
     phone_number = models.CharField(max_length=16)
     checked_out = models.BooleanField(default=False)
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_on']
 
     def __str__(self):
         return f'Reservation for vehicle: {self.plate_number}'

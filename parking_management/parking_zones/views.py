@@ -52,12 +52,17 @@ class ReservationView(View):
             parking_zone = reservation_form.cleaned_data['parking_zone']
             plate_number = reservation_form.cleaned_data['plate_number']
 
+            parkingzone = Parking_Zone.objects.get(name=parking_zone)
+            if parkingzone.vacant_slots == 0:
+                messages.warning(self.request, 'Parking Zone Full!')
+                return redirect('index')
+
             reservation = reservation_form.save(commit=False)
             reservation.customer = request.user
             reservation.parking_zone = parking_zone
             reservation.ticket_code = create_ticket_code()
             reservation.save()
-            parkingzone = Parking_Zone.objects.get(name=parking_zone)
+            #parkingzone = Parking_Zone.objects.get(name=parking_zone)
             parkingzone.occupied_slots += 1
             parkingzone.save()
             vacantslots = int(parkingzone.num_of_slots) - int(parkingzone.occupied_slots)
@@ -69,12 +74,12 @@ class ReservationView(View):
         return render(request, 'parking_zones/booking.html', {'form': reservation_form})
 
 
-class Pdf(View):
+class Ticket_Pdf(View):
 
     def get(self, request):
         
         today = timezone.now()
-        reservation = Reservation.objects.filter(Q(customer=request.user, checked_out=False) | Q(customer=request.user, checked_out=True)).last()
+        reservation = Reservation.objects.filter(Q(customer=request.user, checked_out=False) | Q(customer=request.user, checked_out=True)).first()
         if reservation:
             params = {
                 'today': today,
@@ -85,6 +90,25 @@ class Pdf(View):
         else:
             messages.warning(self.request, f'No Parking reservation exists for {self.request.user}')
             return redirect('index')    
+
+
+class Display_Tickets(View):
+
+    def get(self, request):
+        
+        today = timezone.now()
+        reservations = Reservation.objects.filter(customer=self.request.user)
+        if reservations:
+            context = {
+                'today': today,
+                'reservations': reservations,
+                'request': request
+            }
+            return render(request, 'parking_zones/all_tickets.html', context)
+        else:
+            messages.warning(self.request, f'No Parking reservation exists for {self.request.user}')
+            return redirect('index') 
+
 
 @login_required
 def check_out(request):
