@@ -9,7 +9,7 @@ Smart parking management is a web-based system with the following functionalitie
 2. Log in registered users.
 3. Logged in users can book for a parking spot from different parking zones, get parking receipt with parking details and checkout from a parking spot.
 4. Admins can create parking zones indicating the number of parking spots available.
-5. Admin can view parkig details of all users.
+5. Admin can view parking details of all users.
 
 
 ## Getting Started
