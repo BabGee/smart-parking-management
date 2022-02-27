@@ -18,7 +18,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 You will find hereafter what I use to develop and to run the project
-* Python 3.9
+* Python 3
 * Django 3.1.6
 * pipenv (not mandatory but highly recommended)
 
@@ -37,7 +37,7 @@ cd into the folder
 cd smart-parking-management
 ```
 
-I use pipenv for developing this project so I recommend you to create a virtual environment and activate it.
+The Framework, Packages and Libraries used in this project are installed in a virtual environment(Recommended); i use pipenv. Instructions on how to get pipenv [here](https://pypi.org/project/pipenv/)
 
 ```bash
 python3 -m pipenv shell
@@ -55,24 +55,35 @@ Then follow these steps:
 ```bash
 cd parking_management
 ```
-2. Create a `.env` file in the root folder, provide the required database information  to the `.env` file (.env.example file is provided to help set this information)
+2. Create a `.env` file in the root folder, provide the required database information  to the `.env` file (.env.example file is provided to help set this information). You can choose to rename the .env.example to .env
 
 3. Create the tables with the django command line
 
 ```bash
-python manage.py makemigrations
+python3 manage.py makemigrations
 ```
 then migrate the changes
  
 ```bash
-python manage.py migrate
+python3 manage.py migrate
 ```
+
+Create an admin using command below and enter your preferred username, email and password.(You will use this to login django admin and create parking lots etc)
+ 
+```bash
+python3 manage.py createsuperuser
+```
+
 
 4. Finally, run the django server
 
 ```bash
 python manage.py runserver
 ```
+
+5. Access the django admin by adding ' /admin' to the url and login to create parking lots
+
+
 
 ## Built With
 
