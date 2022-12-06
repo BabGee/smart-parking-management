@@ -71,6 +71,8 @@ venv.bak/
 # mkdocs documentation 
 /site 
 
+helper = cache --timeout=999999
+
 # mypy 
 .mypy_cache/ 
 
